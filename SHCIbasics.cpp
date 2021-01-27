@@ -636,6 +636,7 @@ double SHCIbasics::DoPerturbativeDeterministic(
   for (size_t i = 0; i < hasHEDDets.size(); i++) {
     psi1normthrd += pow(abs(hasHEDNumerator[i] / (E0 - hasHEDEnergy[i])), 2);
     PTEnergy += pow(abs(hasHEDNumerator[i]), 2) / (E0 - hasHEDEnergy[i]);
+    pout << hasHEDEnergy[i] << "," << abs(hasHEDNumerator[i]) << endl;
   }
 
   Psi1NormProc += psi1normthrd;
