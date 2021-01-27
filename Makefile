@@ -3,11 +3,12 @@
 ##########################
 
 USE_MPI = yes
-USE_INTEL = no
+USE_INTEL = yes
 USING_OSX = no
 
-EIGEN=/home/sash2458/newApps/eigen/
-BOOST=/home/sash2458/newApps/boost_1_67_0/
+
+EIGEN=$(EIGENDIR)
+BOOST=$(CURC_BOOST_ROOT)
 
 #########################################
 # DO NOT EDIT ANYTHING BELOW THIS POINT #
@@ -17,9 +18,8 @@ git_commit=`git rev-parse HEAD`
 git_branch=`git branch | grep "^\*" | sed 's/^..//'`
 export VERSION_FLAGS=-Dgit_commit="\"$(git_commit)\"" -Dgit_branch="\"$(git_branch)\""
 
-FLAGS  = -std=c++11 -g -w -O3 -I${EIGEN} -I${BOOST} $(VERSION_FLAGS)
-DFLAGS = -std=c++11 -g -w -O3 -I${EIGEN} -I${BOOST} $(VERSION_FLAGS) -DComplex
-LFLAGS = -L${BOOST}/stage/lib -lboost_serialization
+FLAGS  = -std=c++11 -g  -O3 -I${EIGEN} -I${BOOST}/include $(VERSION_FLAGS) #-DComplex
+DFLAGS = -std=c++11 -g  -O3 -I${EIGEN} -I${BOOST}/include $(VERSION_FLAGS) -DComplex
 
 ifeq ($(USE_INTEL), yes)
 	FLAGS += -qopenmp
@@ -27,10 +27,11 @@ ifeq ($(USE_INTEL), yes)
 	ifeq ($(USE_MPI), yes)
 		CXX = mpiicpc
 		CC = mpiicpc
-		LFLAGS += -lboost_mpi
+		LFLAGS = -L${BOOST}/lib -lboost_serialization -lboost_mpi -lrt
 	else
 		CXX = icpc
 		CC = icpc
+		LFLAGS = -L${BOOST}/lib -lboost_serialization -lrt
 		FLAGS += -DSERIAL
 		DFLAGS += -DSERIAL
 	endif
